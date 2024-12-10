@@ -9,6 +9,7 @@ require('dotenv').config();
 const apiRoutes         = require('./routes/api.js');
 const fccTestingRoutes  = require('./routes/fcctesting.js');
 const runner            = require('./test-runner');
+const myDB = require('./connection.js');
 
 let app = express();
 
@@ -36,15 +37,19 @@ app.route('/')
 //For FCC testing purposes
 fccTestingRoutes(app);
 
+myDB(async (myDataBase) => {
+ // const myDataBase = await client.db('database').collection('fcc_tasks');
 //Routing for API 
-apiRoutes(app);  
+apiRoutes(app,myDataBase);  
+})
     
 //404 Not Found Middleware
-app.use(function(req, res, next) {
-  res.status(404)
-    .type('text')
-    .send('Not Found');
-});
+// app.use(function(req, res, next) {
+
+//   res.status(404)
+//     .type('text')
+//     .send('Not Found');
+// });
 
 //Start our server and tests!
 const listener = app.listen(process.env.PORT || 3000, function () {
